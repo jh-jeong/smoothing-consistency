@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# PyCharm project settings
+.idea/
+
+# Model log files
+logs/
