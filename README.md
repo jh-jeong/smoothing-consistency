@@ -1,7 +1,7 @@
-# Consistency Regularization for Certified Robustness of Smoothed Classifiers
+# Consistency Regularization for Certified Robustness of Smoothed Classifiers (NeurIPS2020)
 
 This repository contains code for the paper
-**"Consistency Regularization for Certified Robustness of Smoothed Classifiers"**
+**"Consistency Regularization for Certified Robustness of Smoothed Classifiers"** 
 by [Jongheon Jeong](https://sites.google.com/view/jongheonj) and [Jinwoo Shin](http://alinlab.kaist.ac.kr/shin.html). 
 
 
