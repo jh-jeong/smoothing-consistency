@@ -1,6 +1,6 @@
 # Experiments
 
-This document describes how to replicate our results on MNIST. 
+This document specifies how to replicate our results on MNIST. 
 Results on other datasets, e.g., CIFAR-10 and ImageNet, can be reproduced in a similar way.
 
 ### Training
@@ -15,11 +15,11 @@ CUDA_VISIBLE_DEVICES=[num] python code/train_cohen.py mnist lenet --lr 0.01 --lr
 
 # Baseline: SmoothAdv (Salman et al., 2019)
 CUDA_VISIBLE_DEVICES=[num] python code/train_salman.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.25 \
---attack PGD --epsilon 255 --num-steps 4 --warmup 10 --num-noise-vec 2
+--attack PGD --epsilon 255 --num-steps 10 --warmup 10 --num-noise-vec 4
 CUDA_VISIBLE_DEVICES=[num] python code/train_salman.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.50 \
---attack PGD --epsilon 255 --num-steps 4 --warmup 10 --num-noise-vec 2
+--attack PGD --epsilon 255 --num-steps 10 --warmup 10 --num-noise-vec 4
 CUDA_VISIBLE_DEVICES=[num] python code/train_salman.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
---attack PGD --epsilon 255 --num-steps 4 --warmup 10 --num-noise-vec 2
+--attack PGD --epsilon 255 --num-steps 10 --warmup 10 --num-noise-vec 4
 
 # Baseline: Stability training (Li et al., 2019)
 CUDA_VISIBLE_DEVICES=[num] python code/train_stab.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90 --noise 0.25 \
@@ -47,11 +47,12 @@ CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_
 
 # Ours: SmoothAdv + Consistency (lbd=5)
 CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.25 \
---num-noise-vec 2 --lbd 5 --adv-training --epsilon 255 --num-steps 2 --warmup 10
+--num-noise-vec 4 --lbd 5 --adv-training --epsilon 255 --num-steps 10 --warmup 10
 CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.50 \
---num-noise-vec 2 --lbd 5 --adv-training --epsilon 255 --num-steps 2 --warmup 10
+--num-noise-vec 4 --lbd 5 --adv-training --epsilon 255 --num-steps 10 --warmup 10
 CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
---num-noise-vec 2 --lbd 5 --adv-training --epsilon 255 --num-steps 2 --warmup 10
+--num-noise-vec 4 --lbd 5 --adv-training --epsilon 255 --num-steps 10 --warmup 10
+
 ```
 
 ### Certification
@@ -66,12 +67,12 @@ python code/certify.py mnist logs/mnist/cohen/noise_1.0/checkpoint.pth.tar 1.00 
 test/certify/mnist/cohen/noise_1.00 --N=100000 --skip=1
 
 # Baseline: SmoothAdv (Salman et al., 2019)
-python code/certify.py mnist logs/mnist/salman/pgd_255.0_4_10/num_2/noise_0.25/checkpoint.pth.tar 0.25 \
-test/certify/mnist/salman/pgd_255.0_4_10/num_2/noise_0.25 --N=100000 --skip=1
-python code/certify.py mnist logs/mnist/salman/pgd_255.0_4_10/num_2/noise_0.5/checkpoint.pth.tar 0.5 \
-test/certify/mnist/salman/pgd_255.0_4_10/num_2/noise_0.50 --N=100000 --skip=1
-python code/certify.py mnist logs/mnist/salman/pgd_255.0_4_10/num_2/noise_1.0/checkpoint.pth.tar 1.0 \
-test/certify/mnist/salman/pgd_255.0_4_10/num_2/noise_1.00 --N=100000 --skip=1
+python code/certify.py mnist logs/mnist/salman/pgd_255.0_10_10/num_4/noise_0.25/checkpoint.pth.tar 0.25 \
+test/certify/mnist/salman/pgd_255.0_10_10/num_4/noise_0.25 --N=100000 --skip=1
+python code/certify.py mnist logs/mnist/salman/pgd_255.0_10_10/num_4/noise_0.5/checkpoint.pth.tar 0.5 \
+test/certify/mnist/salman/pgd_255.0_10_10/num_4/noise_0.50 --N=100000 --skip=1
+python code/certify.py mnist logs/mnist/salman/pgd_255.0_10_10/num_4/noise_1.0/checkpoint.pth.tar 1.0 \
+test/certify/mnist/salman/pgd_255.0_10_10/num_4/noise_1.00 --N=100000 --skip=1
 
 # Baseline: Stability training (Li et al., 2019)
 python code/certify.py mnist logs/mnist/stab/lbd_2.0/noise_0.25/checkpoint.pth.tar 0.25 \
@@ -98,10 +99,10 @@ python code/certify.py mnist logs/mnist/consistency/cohen/num_2/lbd_20.0/noise_1
 test/certify/mnist/consistency/cohen/num_2/lbd_20.0/noise_1.00 --N=100000 --skip=1
 
 # Ours: SmoothAdv + Consistency (lbd=5)
-python code/certify.py mnist logs/mnist/consistency/salman_255.0_2_10/num_2/lbd_5.0/noise_0.25/checkpoint.pth.tar 0.25 \
-test/certify/mnist/consistency/salman_255.0_2_10/num_2/lbd_5.0/noise_0.25 --N=100000 --skip=1
-python code/certify.py mnist logs/mnist/consistency/salman_255.0_2_10/num_2/lbd_5.0/noise_0.5/checkpoint.pth.tar 0.5 \
-test/certify/mnist/consistency/salman_255.0_2_10/num_2/lbd_5.0/noise_0.50 --N=100000 --skip=1
-python code/certify.py mnist logs/mnist/consistency/salman_255.0_2_10/num_2/lbd_5.0/noise_1.0/checkpoint.pth.tar 1.0 \
-test/certify/mnist/consistency/salman_255.0_2_10/num_2/lbd_5.0/noise_1.00 --N=100000 --skip=1
+python code/certify.py mnist logs/mnist/consistency/salman_255.0_10_10/num_4/lbd_5.0/noise_0.25/checkpoint.pth.tar 0.25 \
+test/certify/mnist/consistency/salman_255.0_10_10/num_4/lbd_5.0/noise_0.25 --N=100000 --skip=1
+python code/certify.py mnist logs/mnist/consistency/salman_255.0_10_10/num_4/lbd_5.0/noise_0.5/checkpoint.pth.tar 0.5 \
+test/certify/mnist/consistency/salman_255.0_10_10/num_4/lbd_5.0/noise_0.50 --N=100000 --skip=1
+python code/certify.py mnist logs/mnist/consistency/salman_255.0_10_10/num_4/lbd_5.0/noise_1.0/checkpoint.pth.tar 1.0 \
+test/certify/mnist/consistency/salman_255.0_10_10/num_4/lbd_5.0/noise_1.00 --N=100000 --skip=1
 ```
