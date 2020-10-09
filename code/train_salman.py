@@ -150,7 +150,7 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
         mini_batches = _chunk_minibatch(batch, args.num_noise_vec)
         for inputs, targets in mini_batches:
             inputs, targets = inputs.to(device), targets.to(device)
-            inputs = inputs.repeat((1, args.num_noise_vec, 1, 1)).reshape(batch[0].shape)
+            inputs = inputs.repeat((1, args.num_noise_vec, 1, 1)).reshape(-1, *batch[0].shape[1:])
             batch_size = inputs.size(0)
 
             # augment inputs with noise
