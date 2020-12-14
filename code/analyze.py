@@ -31,6 +31,10 @@ class ApproximateAccuracy(Accuracy):
     def at_radius(self, df: pd.DataFrame, radius: float):
         return (df["correct"] & (df["radius"] >= radius)).mean()
 
+    def acr(self):
+        df = pd.read_csv(self.data_file_path, delimiter="\t")
+        return (df["correct"] * df["radius"]).mean()
+
 
 class HighProbAccuracy(Accuracy):
     def __init__(self, data_file_path: str, alpha: float, rho: float):
