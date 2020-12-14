@@ -38,19 +38,19 @@ CUDA_VISIBLE_DEVICES=[num] python code/train_macer.py mnist lenet --lr 0.01 --lr
 --num-noise-vec 16 --beta 16.0 --margin 8.0 --lbd 6.0 --deferred
 
 # Ours: Gaussian + Consistency (lbd=20) 
-CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.25 \
+CUDA_VISIBLE_DEVICES=[num] python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.25 \
 --num-noise-vec 2 --lbd 20
-CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.50 \
+CUDA_VISIBLE_DEVICES=[num] python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.50 \
 --num-noise-vec 2 --lbd 20
-CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
+CUDA_VISIBLE_DEVICES=[num] python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
 --num-noise-vec 2 --lbd 20
 
 # Ours: SmoothAdv + Consistency (lbd=5)
-CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.25 \
+CUDA_VISIBLE_DEVICES=[num] python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.25 \
 --num-noise-vec 4 --lbd 5 --adv-training --epsilon 255 --num-steps 10 --warmup 10
-CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.50 \
+CUDA_VISIBLE_DEVICES=[num] python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 0.50 \
 --num-noise-vec 4 --lbd 5 --adv-training --epsilon 255 --num-steps 10 --warmup 10
-CUDA_VISIBLE_DEVICES=[num] python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
+CUDA_VISIBLE_DEVICES=[num] python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
 --num-noise-vec 4 --lbd 5 --adv-training --epsilon 255 --num-steps 10 --warmup 10
 
 ```
