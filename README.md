@@ -24,12 +24,12 @@ pip install setGPU tensorboardX
 
 ### Training Scripts
 
-The main script is `train.py`; We also provide training scripts 
+The main script is `train_consistency.py`; We also provide training scripts 
 to reproduce other baseline methods in `train_*.py`, as listed in what follows:
 
 | File | Description |
 | ------ | ------ |
-| [train.py](code/train.py) |  The main script; Consistency regularization |
+| [train_consistency.py](code/train_consistency.py) |  The main script; Consistency regularization |
 | [train_cohen.py](code/train_cohen.py) | Gaussian augmentation (Cohen et al., 2019) |
 | [train_salman.py](code/train_salman.py) | SmoothAdv (Salman et al., 2019) |
 | [train_stab.py](code/train_stab.py) | Stability training (Li et al., 2019) |
@@ -41,11 +41,11 @@ One can modify `CUDA_VISIBLE_DEVICES` to further specify GPU number(s) to work o
 
 ```
 # Consistency regularization (lbd=20) with Gaussian augmentation (Cohen et al., 2019)
-CUDA_VISIBLE_DEVICES=0 python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
+CUDA_VISIBLE_DEVICES=0 python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
 --num-noise-vec 2 --lbd 20
 
 # Consistency regularization (lbd=5) with SmoothAdv (Salman et al., 2019)
-CUDA_VISIBLE_DEVICES=0 python code/train.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
+CUDA_VISIBLE_DEVICES=0 python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
 --num-noise-vec 2 --lbd 5 --adv-training --epsilon 255 --num-steps 2 --warmup 10
 ```
 
