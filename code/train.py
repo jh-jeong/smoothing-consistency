@@ -15,6 +15,8 @@ from third_party.smoothadv import Attacker
 from train_utils import AverageMeter, accuracy, log, requires_grad_, test
 from train_utils import prologue
 
+from consistency import consistency_loss
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -72,28 +74,6 @@ args.outdir = f"logs/{args.dataset}/consistency/{mode}/num_{args.num_noise_vec}/
 args.epsilon /= 256.0
 
 
-def kl_div(input, targets, reduction='batchmean'):
-    return F.kl_div(F.log_softmax(input, dim=1), targets,
-                    reduction=reduction)
-
-
-def _cross_entropy(input, targets, reduction='mean'):
-    targets_prob = F.softmax(targets, dim=1)
-    xent = (-targets_prob * F.log_softmax(input, dim=1)).sum(1)
-    if reduction == 'sum':
-        return xent.sum()
-    elif reduction == 'mean':
-        return xent.mean()
-    elif reduction == 'none':
-        return xent
-    else:
-        raise NotImplementedError()
-
-
-def _entropy(input, reduction='mean'):
-    return _cross_entropy(input, input, reduction)
-
-
 def main():
     train_loader, test_loader, criterion, model, optimizer, scheduler, \
     starting_epoch, logfilename, model_path, device, writer = prologue(args)
@@ -142,7 +122,6 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
     data_time = AverageMeter()
     losses = AverageMeter()
     losses_reg = AverageMeter()
-    confidence = AverageMeter()
     top1 = AverageMeter()
     top5 = AverageMeter()
     end = time.time()
@@ -175,27 +154,16 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
             targets_c = targets.repeat(args.num_noise_vec)
 
             logits = model(inputs_c)
-
             loss_xent = criterion(logits, targets_c)
 
             logits_chunk = torch.chunk(logits, args.num_noise_vec, dim=0)
-            softmax = [F.softmax(logit, dim=1) for logit in logits_chunk]
-            avg_softmax = sum(softmax) / args.num_noise_vec
+            loss_con = consistency_loss(logits_chunk, args.lbd)
 
-            consistency = [kl_div(logit, avg_softmax, reduction='none').sum(1)
-                           + _entropy(avg_softmax, reduction='none')
-                           for logit in logits_chunk]
-            consistency = sum(consistency) / args.num_noise_vec
-            consistency = consistency.mean()
-
-            loss = loss_xent + args.lbd * consistency
-
-            avg_confidence = -F.nll_loss(avg_softmax, targets)
+            loss = loss_xent + loss_con
 
             acc1, acc5 = accuracy(logits, targets_c, topk=(1, 5))
             losses.update(loss_xent.item(), batch_size)
-            losses_reg.update(consistency.item(), batch_size)
-            confidence.update(avg_confidence.item(), batch_size)
+            losses_reg.update(loss_con.item(), batch_size)
             top1.update(acc1.item(), batch_size)
             top5.update(acc5.item(), batch_size)
 
@@ -220,7 +188,6 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
 
     writer.add_scalar('loss/train', losses.avg, epoch)
     writer.add_scalar('loss/consistency', losses_reg.avg, epoch)
-    writer.add_scalar('loss/avg_confidence', confidence.avg, epoch)
     writer.add_scalar('batch_time', batch_time.avg, epoch)
     writer.add_scalar('accuracy/train@1', top1.avg, epoch)
     writer.add_scalar('accuracy/train@5', top5.avg, epoch)
