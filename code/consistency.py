@@ -6,7 +6,7 @@ def consistency_loss(logits, lbd, loss='default', lbd2=0.5):
     """
     Consistency regularization for certified robustness.
 
-    **IMPORTANT**: The loss design mainly evaluated in the paper is
+    **IMPORTANT**: The loss form mainly evaluated in the paper is
     slightly different to the cross-entropy (KL + entropy), due to an
     incorrect implementation of the entropy term. We keep this form
     by default here to maintain the reproducibility (loss='default'),
@@ -30,14 +30,14 @@ def consistency_loss(logits, lbd, loss='default', lbd2=0.5):
         - 'xent': The "correct" implementation of cross-entropy.
             Compared to 'default', one should use a lower lbd (e.g., lbd = 3)
             for better results. It usually achieves higher clean accuracy
-            than 'default', and higher ACR particularly with SmoothAdv.
+            than 'default', and higher ACR with SmoothAdv.
         - 'kl_ent': A hybrid form ``lbd * KL + lbd2 * entropy``.
             The entropy term has an extra hyperparameter lbd2.
             It is equivalent to 'xent' when lbd2 = lbd, but allows
             a larger lbd (e.g., lbd = 20) when lbd2 is smaller (e.g., lbd2 < 1).
             This roughly fills the gap between 'default' and 'xent'.
         - 'kl': The KL-divergence between each predictions and their average.
-        - 'mse': The mean-squared error between the first two logits.
+        - 'mse': The mean-squared error between the first two predictions.
     lbd2 : float (optional)
         Only used when loss='kl_ent'.
 
