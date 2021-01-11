@@ -43,6 +43,8 @@ parser.add_argument('--noise_sd', default=0.0, type=float,
                     help="standard deviation of Gaussian noise for data augmentation")
 parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
+parser.add_argument('--id', default=None, type=int,
+                    help='experiment id, `randint(10000)` if None')
 
 #####################
 # Options added by Salman et al. (2019)
@@ -54,7 +56,8 @@ parser.add_argument('--pretrained-model', type=str, default='',
 #####################
 parser.add_argument('--num-noise-vec', default=1, type=int,
                     help="number of noise vectors. `m` in the paper.")
-parser.add_argument('--lbd', default=20., type=float)
+parser.add_argument('--lbd', default=10., type=float)
+parser.add_argument('--eta', default=0.5, type=float)
 
 # Options when SmoothAdv is used (Salman et al., 2019)
 parser.add_argument('--adv-training', action='store_true')
@@ -69,7 +72,7 @@ if args.adv_training:
     mode = f"salman_{args.epsilon}_{args.num_steps}_{args.warmup}"
 else:
     mode = f"cohen"
-args.outdir = f"logs/{args.dataset}/consistency/{mode}/num_{args.num_noise_vec}/lbd_{args.lbd}/noise_{args.noise_sd}"
+args.outdir = f"logs/{args.dataset}/consistency/{mode}/num_{args.num_noise_vec}/lbd_{args.lbd}/eta_{args.eta}/noise_{args.noise_sd}"
 
 args.epsilon /= 256.0
 
@@ -157,7 +160,7 @@ def train(loader: DataLoader, model: torch.nn.Module, criterion, optimizer: Opti
             loss_xent = criterion(logits, targets_c)
 
             logits_chunk = torch.chunk(logits, args.num_noise_vec, dim=0)
-            loss_con = consistency_loss(logits_chunk, args.lbd)
+            loss_con = consistency_loss(logits_chunk, args.lbd, args.eta)
 
             loss = loss_xent + loss_con
 
