@@ -88,6 +88,9 @@ def copy_code(outdir):
 
 
 def prologue(args):
+    if not hasattr(args, 'id') or args.id is None:
+        args.id = np.random.randint(10000)
+    args.outdir = args.outdir + f"/{args.arch}/{args.id}/"
     if not os.path.exists(args.outdir):
         os.makedirs(args.outdir)
 

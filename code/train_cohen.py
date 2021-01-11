@@ -40,6 +40,8 @@ parser.add_argument('--noise_sd', default=0.0, type=float,
                     help="standard deviation of Gaussian noise for data augmentation")
 parser.add_argument('--print-freq', default=10, type=int,
                     metavar='N', help='print frequency (default: 10)')
+parser.add_argument('--id', default=None, type=int,
+                    help='experiment id, `randint(10000)` if None')
 
 #####################
 # Options added by Salman et al. (2019)
