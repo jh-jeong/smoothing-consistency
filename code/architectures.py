@@ -8,6 +8,8 @@ import torch.backends.cudnn as cudnn
 
 from archs.cifar_resnet import resnet as resnet_cifar
 from archs.lenet import LeNet
+from archs.densenet import densenet40
+
 from datasets import get_normalize_layer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -16,7 +18,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # resnet50 - the classic ResNet-50, sized for ImageNet
 # cifar_resnet20 - a 20-layer residual network sized for CIFAR
 # cifar_resnet110 - a 110-layer residual network sized for CIFAR
-ARCHITECTURES = ["lenet", "resnet50", "cifar_resnet20", "cifar_resnet110"]
+# cifar_densenet40 - a 40-layer densely-connected network for CIFAR
+ARCHITECTURES = ["lenet", "resnet50", "cifar_resnet20", "cifar_resnet110", "cifar_densenet40"]
 
 def get_architecture(arch: str, dataset: str) -> torch.nn.Module:
     """ Return a neural network (with random weights)
@@ -32,6 +35,8 @@ def get_architecture(arch: str, dataset: str) -> torch.nn.Module:
         model = resnet_cifar(depth=20, num_classes=10)
     elif arch == "cifar_resnet110":
         model = resnet_cifar(depth=110, num_classes=10)
+    elif arch == "cifar_densenet40":
+        model = densenet40(num_classes=10)
     elif arch == "lenet":
         model = LeNet(num_classes=10)
     normalize_layer = get_normalize_layer(dataset)
