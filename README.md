@@ -40,13 +40,13 @@ Notice that SmoothAdv training is enabled by simply passing `--adv-training` opt
 One can modify `CUDA_VISIBLE_DEVICES` to further specify GPU number(s) to work on.
 
 ```
-# Consistency regularization (lbd=20) with Gaussian augmentation (Cohen et al., 2019)
+# Consistency regularization (lbd=5) with Gaussian augmentation (Cohen et al., 2019)
 CUDA_VISIBLE_DEVICES=0 python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
---num-noise-vec 2 --lbd 20
+--num-noise-vec 2 --lbd 5
 
-# Consistency regularization (lbd=5) with SmoothAdv (Salman et al., 2019)
+# Consistency regularization (lbd=1) with SmoothAdv (Salman et al., 2019)
 CUDA_VISIBLE_DEVICES=0 python code/train_consistency.py mnist lenet --lr 0.01 --lr_step_size 30 --epochs 90  --noise 1.00 \
---num-noise-vec 2 --lbd 5 --adv-training --epsilon 255 --num-steps 2 --warmup 10
+--num-noise-vec 2 --lbd 1 --adv-training --epsilon 255 --num-steps 2 --warmup 10
 ```
 
 For a more detailed instruction to reproduce our experiments, see [`EXPERIMENTS.MD`](EXPERIMENTS.MD).
